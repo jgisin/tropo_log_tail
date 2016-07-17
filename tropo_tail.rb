@@ -19,8 +19,15 @@ class TropoTail
   def run
     puts "Please type your Tropo Username..."
     @username = gets.chomp
-    puts "Please enter your Tropo Password"
-    @password = gets.chomp
+    begin
+      puts "Please enter your Tropo Password"
+      system 'stty -echo'
+      @password = gets.chomp
+      system 'stty echo'
+    rescue
+      system 'stty echo'
+      exit
+    end
   end
 
   def get_latest
