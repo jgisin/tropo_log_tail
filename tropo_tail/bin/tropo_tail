@@ -1,0 +1,113 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'methadone'
+require 'tropo_tail.rb'
+require 'net/ftp'
+require 'colorize'
+
+class App
+  include Methadone::Main
+  include Methadone::CLILogging
+
+  main do # Add args you want: |like,so|
+    @ftp = Net::FTP.new('ftp.tropo.com')
+    run
+    @ftp.login(@username, @password)
+    @ftp.chdir('logs')
+    get_latest
+    if @filename.nil?
+      puts "No new logs"
+    else
+      tail
+    end
+  end
+
+  # supplemental methods here
+  def self.run
+    puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    puts "Please type your Tropo Username..."
+    @username = gets.chomp
+    begin
+      puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      puts "Please enter your Tropo Password"
+      system 'stty -echo'
+      @password = gets.chomp
+      system 'stty echo'
+    rescue
+      system 'stty echo'
+      exit
+    end
+  end
+
+  def self.get_latest
+    @ftp.list.each do |file|
+      if file[-4..-1] == ".txt"
+        @filename = file[-19..-1]
+      end
+    end
+  end
+
+  def self.tail
+    maxline = 0
+    orig_log = @filename
+    while 0 < 1
+      get_latest
+      if orig_log != @filename
+        maxline = 0
+        orig_log = @filename
+      end
+      linecount = 0
+      @ftp.gettextfile(@filename, nil) do |line|
+        info = /(?<=PRISM )(?<=PRISM )(\d{7}\/\d{7}\/)(\w{32}\/|0\/)(\w{32}\/)(1\/)(\S{1,50}\/)(\[\S{1,50}\])/.match(line).to_s.yellow
+        linecount += 1
+        if linecount > maxline
+          maxline = linecount
+          if options['truncate']
+            puts "#{line[0..19].blue} #{line[(info.length + 38)..-1]}"
+          else
+            puts "#{line[0..19].blue}#{line[21..50].yellow} #{info}#{line[(info.length + 38)..-1]}"
+          end
+        end
+      end
+      sleep 3
+    end
+  end
+
+  def self.log_line_break
+    Thread.new do
+      while 0 < 1
+        char = STDIN.getc
+        if char == "\r"
+          puts ""
+        end
+      end
+    end
+  end
+
+
+  # Declare command-line interface here
+
+  # description "one line description of your app"
+  #
+  # Accept flags via:
+  # on("--flag VAL","Some flag")
+  # options[flag] will contain VAL
+  #
+  # Specify switches via:
+   on("--truncate","Some switch")
+  #
+  # Or, just call OptionParser methods on opts
+  #
+  # Require an argument
+  # arg :some_arg 
+  #
+  # # Make an argument optional
+  # arg :optional_arg, :optional
+
+  version TropoTail::VERSION
+
+  use_log_level_option :toggle_debug_on_signal => 'USR1'
+
+  go!
+end
