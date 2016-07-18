@@ -2,7 +2,7 @@
 
 require 'optparse'
 require 'methadone'
-#require 'tropo_tail.rb'
+require 'tropo_tail.rb'
 require 'net/ftp'
 require 'colorize'
 
@@ -25,11 +25,9 @@ class App
 
   # supplemental methods here
   def self.run
-    puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     puts "Please type your Tropo Username..."
     @username = gets.chomp
     begin
-      puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
       puts "Please enter your Tropo Password"
       system 'stty -echo'
       @password = gets.chomp
@@ -88,7 +86,7 @@ class App
 
   # Declare command-line interface here
 
-  # description "one line description of your app"
+  description "Tropo log tailing."
   #
   # Accept flags via:
   # on("--flag VAL","Some flag")

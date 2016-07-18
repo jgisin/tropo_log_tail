@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    tropo_tail (0.1.0)
+    tropo_tail (0.2.3)
+      colorize
       methadone (~> 1.9.2)
 
 GEM
@@ -39,7 +40,7 @@ GEM
     multi_json (1.12.1)
     multi_test (0.1.2)
     power_assert (0.2.2)
-    rake (11.2.2)
+    rake (10.5.0)
     rdoc (4.2.2)
       json (~> 1.4)
     rspec-expectations (3.5.0)
@@ -57,7 +58,7 @@ DEPENDENCIES
   aruba
   bundler (~> 1.11)
   colorize
-  rake
+  rake (~> 10.0)
   rdoc
   test-unit
   tropo_tail!
