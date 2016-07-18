@@ -18,6 +18,7 @@ class App
     get_latest
     if @filename.nil?
       puts "No new logs"
+      wait_for_logs
     else
       tail
     end
@@ -25,11 +26,9 @@ class App
 
   # supplemental methods here
   def self.run
-    puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     puts "Please type your Tropo Username..."
     @username = gets.chomp
     begin
-      puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
       puts "Please enter your Tropo Password"
       system 'stty -echo'
       @password = gets.chomp
@@ -38,6 +37,15 @@ class App
       system 'stty echo'
       exit
     end
+  end
+
+  def self.wait_for_logs
+    while @filename.nil?
+      get_latest
+      sleep 15
+      print "."
+    end
+    tail
   end
 
   def self.get_latest
