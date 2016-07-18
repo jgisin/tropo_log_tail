@@ -17,13 +17,17 @@ class TropoTail
   end
 
   def run
+    puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     puts "Please type your Tropo Username..."
     @username = gets.chomp
+    puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     begin
+      puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
       puts "Please enter your Tropo Password"
       system 'stty -echo'
       @password = gets.chomp
       system 'stty echo'
+      puts "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     rescue
       system 'stty echo'
       exit
@@ -43,8 +47,15 @@ class TropoTail
 
   def tail
     maxline = 0
-    exit_state = 1
-    while 0 < exit_state
+    Thread.new do
+      while 0 < 1
+        char = STDIN.getc
+        if char == "\r"
+          puts ""
+        end
+      end
+    end
+    while 0 < 1
       linecount = 0
       @ftp.gettextfile(@filename, nil) do |line|
         info = /(?<=PRISM )(\d{7}\/\d{7}\/)(\w{32}\/|0\/)(\w{32}\/)(1\/)(\S{1,50}\/)(\[\S{1,50}\])/.match(line).to_s.yellow
