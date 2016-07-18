@@ -50,10 +50,11 @@ class TropoTail
       get_latest
       if orig_log != @filename
         maxline = 0
+        orig_log = @filename
       end
       linecount = 0
       @ftp.gettextfile(@filename, nil) do |line|
-        info = /(?<=PRISM )(\d{7}\/\d{7}\/)(\w{32}\/|0\/)(\w{32}\/)(1\/)(\S{1,50}\/)(\[\S{1,50}\])/.match(line).to_s.yellow
+        info = /(?<=PRISM )(\d{7})(\/)(\d{7})(\/)(\w{32}\/|0)(\/)(\w{32})(\/)(1)(\/)(\S{1,50}\/)(\[\S{1,50}\])/.match(line).to_s.yellow
         linecount += 1
         if linecount > maxline
           maxline = linecount
