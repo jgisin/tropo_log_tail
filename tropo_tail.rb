@@ -34,6 +34,7 @@ class TropoTail
     @ftp.list.each do |file|
       if file[-4..-1] == ".txt"
         @filename = file[-19..-1]
+        puts @filename
       end
     end
   end
@@ -43,10 +44,11 @@ class TropoTail
     while 0 < 1
       linecount = 0
       @ftp.gettextfile(@filename, nil) do |line|
+        info = /(?<=PRISM )(\d{7}\/\d{7}\/)(\w{32}\/|0\/)(\w{32}\/)(1\/)(\S{1,50}\/)(\[\S{1,50}\])/.match(line).to_s.yellow
         linecount += 1
         if linecount > maxline
           maxline = linecount
-          puts "#{line[0..19].blue}#{line[21..44].yellow}#{line[45..-1]}"
+          puts "#{line[0..19].blue}#{line[21..50].yellow} #{info}#{line[(info.length + 38)..-1]}"
         end
       end
       sleep 3
