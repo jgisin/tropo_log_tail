@@ -38,22 +38,18 @@ class TropoTail
     @ftp.list.each do |file|
       if file[-4..-1] == ".txt"
         @filename = file[-19..-1]
-        puts @filename
       end
     end
   end
 
   def tail
     maxline = 0
-    Thread.new do
-      while 0 < 1
-        char = STDIN.getc
-        if char == "\r"
-          puts ""
-        end
-      end
-    end
+    orig_log = @filename
     while 0 < 1
+      get_latest
+      if orig_log != @filename
+        maxline = 0
+      end
       linecount = 0
       @ftp.gettextfile(@filename, nil) do |line|
         info = /(?<=PRISM )(\d{7}\/\d{7}\/)(\w{32}\/|0\/)(\w{32}\/)(1\/)(\S{1,50}\/)(\[\S{1,50}\])/.match(line).to_s.yellow
@@ -71,6 +67,17 @@ class TropoTail
         end
       end
       sleep 3
+    end
+  end
+
+  def log_line_break
+    Thread.new do
+      while 0 < 1
+        char = STDIN.getc
+        if char == "\r"
+          puts ""
+        end
+      end
     end
   end
 
